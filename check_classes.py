@@ -18,7 +18,8 @@ class Name(Field):  # work properly
     def value(self, value):
         if re.match(r'^[a-zA-Z][\D\d]{3,}$', value):
             self.__value = value
-        else: raise ValueError('The name must be longer than one letter and not contain numbers!')
+        else:
+            raise ValueError('The name must be longer than one letter and not contain numbers!')
 
     def __repr__(self):
         return self.value
@@ -72,7 +73,8 @@ class Mail(Field):
         if not mail: self.__value = None
         elif re.findall(r'([a-zA-Z]{1,}[a-zA-Z0-9_\.]{1,}@[a-zA-Z]+\.[a-zA-Z]{2,})', mail):
             self.__value = mail
-        else: raise ValueError('Incorrect email input, check it and try again, please!')
+        else:
+            raise ValueError('Incorrect email input, check it and try again, please!')
 
     def __repr__(self):
         return self.__value
