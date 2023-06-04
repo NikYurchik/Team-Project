@@ -45,7 +45,7 @@ class Birthday(Field):
             self.birthday, datetime.min.time())
 
         if (self.birthday - datetime.now()).days >= 0:
-            res = (self.birthday - datetime.now()).days
+            res = (self.birthday - datetime.now()).days + 1
         else:
             if datetime.now().year % 4:
                 # 365 days for year
@@ -54,13 +54,13 @@ class Birthday(Field):
                 # 366 days for a leap year
                 res = (self.birthday - datetime.now()).days + 366 + 1
                 
-        if res <= lim - 1:
+        if res <= lim:
             return res
 
 
 
 if __name__ == '__main__':
-    a = Birthday('2000-06-11')
+    a = Birthday('2000-06-08')
     print(a)
     print(a.days_to_birthday(7))
     b = Birthday('2000-07-08')
