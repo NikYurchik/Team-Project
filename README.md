@@ -28,6 +28,13 @@ Executes commands:
 
 'exit' - outputs 'Good bye!' and completes its work interactively.
 
+'setting --<key> <value>' - set the value of the settings key.
+    <key>: settings keys.
+        request_missing_details - whether to request in the command mode the missing details of the contact;
+        display_upcoming_birthdays - whether to display, when starting the bot, a list of contacts whose birthday falls within a specified period from the current day;
+        number_of_days - number of days from the current day to display the list of contacts whose birthday falls within this period.
+    First, the current value of the key is displayed, then confirmation of the change is requested.
+
 If the bot is launched with the key and parameters, then it performs the specified operation and exits.
 If the request for missing contact details is set in the settings,
 then in the process of performing add and change operations, the bot will interactively request the missing details.
@@ -61,6 +68,13 @@ then in the process of performing add and change operations, the bot will intera
     С ключём --setting бот отображает все свои текущие настройки.
 
 'exit' - в интерактивном режиме выводит 'Good bye!' и завершает свою работу.
+
+'setting --<key> <value>' - установить значение ключа настроек.
+    <key>: ключи настроек.
+        request_missing_details - запрашивать ли в командном режиме недостающие реквизиты контакта;
+        display_upcoming_birthdays - выводить ли при запуске бота список контактов, у которых день рождения попадает в заданный период от текущего дня;
+        number_of_days - количество дней от текущего дня для вывода списка контактов, у которых день рождения приходится на этот период.
+    Сначала выводится текущее значения ключа, затем запрашивается подтверждение изменения.
 
 Если бот запускается с ключём и параметрами, то он выполняет заданную операцию и завершает работу.
 Если в настройках задан запрос недостающих реквизит контакта,
