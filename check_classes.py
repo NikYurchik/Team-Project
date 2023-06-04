@@ -94,6 +94,7 @@ class FullName(Field):
             self.__value = None if value == None else self.value
         else:
             raise ValueError('Incorrect full name input, check it and try again, please!')
+
     def __repr__(self):
         return self.__value
 
