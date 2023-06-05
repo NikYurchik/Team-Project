@@ -16,7 +16,7 @@ class Name(Field):  # work properly
 
     @value.setter
     def value(self, value):
-        if re.match(r'^[a-zA-Z][\D\d]{3,}$', value):
+        if re.match(r'^[a-zA-Z][\D\d]{2,}$', value):
             self.__value = value
         else:
             raise ValueError('The name must be longer than one letter and not contain numbers!')
@@ -71,7 +71,7 @@ class Mail(Field):
     @value.setter
     def value(self, mail):
         if not mail: self.__value = None
-        elif re.findall(r'([a-zA-Z]{1,}[a-zA-Z0-9_\.]{1,}@[a-zA-Z]+\.[a-zA-Z]{2,})', mail):
+        elif re.findall(r'(^[a-zA-Z]{1,}[a-zA-Z0-9_\.]{1,}@[a-zA-Z]+\.[a-zA-Z]{2,}$)', mail):
             self.__value = mail
         else:
             raise ValueError('Incorrect email input, check it and try again, please!')
@@ -89,9 +89,9 @@ class FullName(Field):
         return '' if self.__value == None else self.__value
 
     @value.setter
-    def value(self, value):
-        if not value: self.__value = None
-        elif re.match(r'(^[a-zA-Z\s\-]{2,}$)', value):
+    def value(self, full_name):
+        if not full_name: self.__value = None
+        elif re.match(r'(^[a-zA-Z\s\-]{2,}$)', full_name):
             self.__value = self.value
         else:
             raise ValueError('Incorrect full name input, check it and try again, please!')
