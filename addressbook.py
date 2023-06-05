@@ -231,27 +231,3 @@ class AddressBook(UserDict):
 
     # def __del__(self):
     #     print('End of work', self)
-
-
-contact = AddressBook()
-contact.rec_add('alex', '0970512111')
-# print(contact)
-contact.rec_add('bob', '0970512122')
-# print(contact)
-contact.mail_save('alex', 'omelch@gmail.com')
-# print(contact)
-record = Record('alex', '0970512111')
-record.mail_add('omelch@gmail.com')
-# print(record)
-record.mail_add('omelch23@gmail.com')
-contact.mail_save('alex', 'omel2323ch@gmail.com')
-# print(record)
-# record.mail_add('omelch@gmail.com')
-# print(contact.mail_save('alex', 'omelch23@gmail.com'))
-contact.full_name_save('alex', 'Omel Ant Oleks')
-# record.full_name_save('Omel Ant Oleks')
-# print(record.full_name.value)
-# contact.address_save('alex', 'Kharkiv, ul. Nezal 54')
-# contact.birthday_save('alex', '23.07.1983')
-# contact.mail_delete('alex', 'omelch@gmail.com')
-print(contact)
