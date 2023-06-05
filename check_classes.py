@@ -1,5 +1,5 @@
 import re
-
+from my_utils import format_phone_number, sanitize_phone_number, get_date
 
 class Field:
     def __init__(self, value):
@@ -90,11 +90,28 @@ class FullName(Field):
 
     @value.setter
     def value(self, value):
-        if re.match(r'(^[a-zA-Z\s\-]{2,}$)', value):
-            self.__value = None if value == None else self.value
+        if not value: self.__value = None
+        elif re.match(r'(^[a-zA-Z\s\-]{2,}$)', value):
+            self.__value = self.value
         else:
             raise ValueError('Incorrect full name input, check it and try again, please!')
 
     def __repr__(self):
         return self.__value
+
+
+class Birthday(Field):
+    def __init__(self, birthday):
+        self.value = birthday
+
+    @property
+    def value(self):
+        return '' if self.__value == None else self.__value.strftime('%Y-%m-%d')
+
+    @value.setter
+    def value(self, birthday):
+        self.__value = None if birthday == None else get_date(birthday)
+
+    def __repr__(self):
+        return self.__value.strftime('%A %d %B %Y')
 
