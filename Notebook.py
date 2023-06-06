@@ -1,185 +1,154 @@
-import datetime
-from collections import UserDict
+from datetime import datetime
+from time import sleep
+import pickle
 
 
 class Note:
-    def __init__(self, content: str):
-        self.content = ''
-        limit = 80
-        if len(content) <= limit:
-            self.content = content
-        else:
-            raise ValueError(f'Нотатка довша {limit} символів.')
-        self.creation_date = datetime.datetime.now()
-
-    def __eq__(self, other_note):
-        return self.content == other_note.content
-
-    def __repr__(self):
-        return self.content
-
-
-class Notebook(UserDict):
+    # Функція ініціалізації змінних.
     def __init__(self):
-        super().__init__()
-        self.data = {}
+        self.notes = []
+        self.dates = None
 
-    def __setitem__(self, tags, note: Note):
-        tags.sort()
-        if tuple(tags) not in self.data.keys():
-            self.data[tuple(tags)] = []
-            self.data[tuple(tags)].append(note)
+    # Функція привітання
+    def hello(self):
+        command = 'Список доступних команд.\nAdd - добавить новую заметку.\nfind - поиск заметки по тегу или по записи.\nEdit - редактировать заметку по индексу.\nDelete - удалить заметку по индексу.\nSort - сортировать заметку по тегу.\nShow all - Для показу всіх нотатків і тегів.\nShow num - Для показу нотатків за кількістю.\nClose - вийти из заметок.\n>>>> '
+        return command
+
+    # Функція для добавлення нотатків та тегів по ним.
+    def add_note(self, note_text, tags):
+        note = {}
+
+        if len(tags) == 0 or tags == ['']:
+            tags = '#'
+            note['tags'] = tags
+
+        elif len(note_text) == 0 or note_text == '':
+            note_text = 'Empty'
+            note = {'text': note_text}
+        elif len(note_text) > 80:
+            raise ValueError('Нельзя записать больше 80 символов.')
+
+        note = {'text': note_text, 'tags': tags}
+        self.notes.append(note)
+        self.dates = datetime.now()
+        delay = 2
+        print(
+            f"Заметка - {note_text} по тегу или тегам {tags} - сохранена.\n Время - {self.dates.strftime('%Y-%B-%d === %H:%M:%S')}")
+        sleep(delay)
+
+    # Функція для пошуку текста по тегу.
+    def search_notes(self, keyword):
+        found_notes = []
+        delay = 2
+
+        for note in self.notes:
+            if keyword in note['tags']:
+                found_notes.append(note)
+
+        if found_notes == True and found_notes != 'Empty':
+            print("Найдены заметки:")
+            for note in found_notes:
+                print(note['text'])
+                sleep(delay)
         else:
-            self.data[tuple(tags)].append(note)
+            print("Заметки не найдены.")
+            sleep(delay)
 
-    def __getitem__(self, tags):
-        matching_notes = []
-        for note_tags, notes in self.data.items():
-            if all(tag in note_tags for tag in tags):
-                if isinstance(notes, list):
-                    for note in notes:
-                        matching_notes.append(note)
-                else:
-                    matching_notes.append(notes)
+    # Функція для редагування нотатку.
+    def edit_note(self, keyword, new_text):
 
-        return matching_notes
+        for note in self.notes:
 
-    def edit_note(self, old_note: Note, new_note: Note):
-        for note_list in self.data.values():
-            if old_note in note_list:
-                index = note_list.index(old_note)
-                note_list[index] = new_note
-                break
+            if keyword in note['tags']:
+                note['text'] = new_text
+
+            self.dates = datetime.now()
+            print("Заметка отредактирована.")
+
+    # Функція для редагування тегу.
+    def edit_tag(self, keyword, new_text):
+
+        for note in self.notes:
+
+            if keyword in note['tags']:
+                note['tags'] = new_text
+
+            self.dates = datetime.now()
+            print("Заметка отредактирована.")
+
+    # Функція дял видалення замітки.
+    def delete_note(self, keyword):
+
+        for note in self.notes:
+
+            if keyword in note['tags']:
+                note['text'] = 'Empty'
+                print(f"Заметка удалена.")
+
+            else:
+                print("Тег не существует.")
+
+    # Функція для видалення всього.
+    def delete_all(self):
+        note = self.notes
+        note.clear()
+        print('Всі замітки та теги видаленні')
+
+    # Функція для сортування нотатків по тегам.
+    def sort_notes_by_tag(self, tag):
+        sorted_notes = []
+
+        for note in self.notes:
+
+            if tag in note['tags']:
+                sorted_notes.append(note)
+
+        if sorted_notes:
+            sorted_notes.sort(key=lambda x: x['text'])
+            print(f"Отсортированные заметки: {sorted_notes}")
+
+            for note in sorted_notes:
+                print(note['text'])
+
         else:
-            raise ValueError('Нотатка не знайдена.')
+            print("Заметки с указанным тегом не найдены.")
 
-    def clean_dict_keys(self, ):
-        for key in self.data.keys():
-            if not self.data[key]:
-                self.data.pop(key)
-                break
+    # Для показу всіх нотатків та тегів.
+    def show(self):
 
-    def delete_note(self, old_note: Note):
-        for note_list in self.data.values():
-            if old_note in note_list:
-                note_list.remove(old_note)
-                self.clean_dict_keys()
-                break
-        else:
-            raise ValueError('Нотатка не знайдена.')
+        for numbering, dic_t in enumerate(self.notes, 1):
+            stroka = ''
 
-    def search_in_content(self, search_string='/all'):
-        matching_notes = []
-        for note_list in self.data.values():
-            for note in note_list:
-                if search_string.lower() == '/all':
-                    matching_notes.append(note)
-                elif search_string.lower() in note.content.lower():
-                    matching_notes.append(note)
-        return matching_notes
+            if len(dic_t['tags']) > 1:
+                for a in dic_t['tags']:
+                    stroka += a + ' '
+            else:
+                for a in dic_t['tags']:
+                    stroka += a
 
-    def iterator(self, n=10):
-        self.page = 0
-        self.record_per_page = n
-        self.out = list(self.data.items())
+            tags = stroka
+            text = dic_t['text']
+            print('{:^2}|{:^10}|==={:^10}==='.format(numbering, tags, text))
 
-        while True:
-            start = self.page * self.record_per_page
-            end = start + self.record_per_page
-            page_record = self.out[start:end]
+        return 'Заметок больше нет'
 
-            if not page_record:
-                return
+    # Функція генератор для нотатків та тегів по заданній кількості.
+    def note_generator(self, index):
+        index = 0
 
-            self.page += 1
+        while int(index) < len(self.notes):
 
-            yield page_record
+            yield self.notes[index:index+2]
+            index += 2
 
-    def __str__(self):
-        page_num = 1
-        out = ''
-        if self.keys():
-            out += '-' * 77 + '\n'
-            out += '| {:^20} | {:^50} |\n'.format('Теги', 'Зміст')
-            for page in self.iterator(1):
-                out += '-' * 77 + '\n'
-                out += ' {:^77} \n'.format(f"Запис #{page_num}")
-                out += '-' * 77 + '\n'
-                for record in page:
-                    out += '| {:^20} | {:^50} |\n'.format(', '.join(record[0]),
-                                                          ', '.join([note.content for note in (record[1])]))
-                page_num += 1
-        else:
-            out += '| {:^77} |\n'.format('Нотатник пустий.')
-        out += '-' * 77 + '\n'
-        return out
+    # Функція для зберігання нотатків та тегів.
+    def save_to_bin(self, filename):
 
+        with open(filename, 'wb') as file:
+            pickle.dump(self.notes, file)
 
+    # Функція для загрузки нотатків та тегів.
+    def load_from_bin(self, filename):
 
-
-if __name__ == '__main__':
-
-    notebook = Notebook()
-
-    # Додавання нотаток до словника
-    note1 = Note('Content 1')
-    note2 = Note('Content 11ghjkdfhgkjdfhgkjhdfkghdfkj')
-    note3 = Note('Content 2')
-    note4 = Note('Ctent 3')
-
-    notebook[['tag1', 'tag2']] = note1
-    notebook[['tag2', 'tag1']] = note2
-    notebook[['tag2', 'tag3']] = note3
-    notebook[['tag3', 'tag4']] = note4
-    #
-
-
-    # print('\n Друк пошуку за тегами')
-    # result = notebook[['tag2']]
-    # result1 = notebook[['tag3']]
-    # result2 = notebook[['tag4']]
-    # print(result)
-    # print(result1)
-    # print(result2)
-
-
-    print(notebook)
-
-    '''Пошук за змістом та зміна нотатки'''
-
-    print('\nВивід пошуку за змістом')
-    search_string = input('Введіть рядок для пошуку (/all щоб показати всі): ')
-    result_search = notebook.search_in_content(search_string)
-
-    for index, match in enumerate(result_search,1):
-        for tags, notes in notebook.data.items():
-            for note in notes:
-                if note == match:
-                    print(f"#{index} : {', #'.join(tags)} | {match}")
-
-    selected_note_index = int(input('Виберіть індекс нотатки для зміни: '))
-    inp = input('Що зробити з нотаткою? (edit, delete). ')
-
-    if inp == 'edit':
-        # Вибір конкретної нотатки для зміни
-        if 0 < selected_note_index < len(result_search)+1:
-            selected_note = result_search[selected_note_index-1]
-            new_content = input('Введіть новий вміст нотатки: ')
-            new_note = Note(new_content)
-            notebook.edit_note(selected_note, new_note)
-            print('Нотатку успішно змінено.')
-        else:
-            print('Неправильний індекс нотатки.')
-
-    elif inp == 'delete':
-        # Вибір конкретної нотатки для видалення
-        if 0 < selected_note_index < len(result_search) + 1:
-            selected_note = result_search[selected_note_index - 1]
-            notebook.delete_note(selected_note)
-            print('Нотатку успішно видалено.')
-        else:
-            print('Неправильний індекс нотатки.')
-
-        print('\n Друк Notebook')
-
-    print(notebook)
+        with open(filename, 'rb') as file:
+            self.notes = pickle.load(file)
