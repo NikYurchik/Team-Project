@@ -55,7 +55,7 @@ class Birthday(Field):
         self.__value = None if birthday == None else get_date(birthday)
 
     def __repr__(self):
-        return self.__value.strftime('%A %d %B %Y')
+        return self.__value.strftime('%A %Y %B %d')
 
 ##########################################################################################
 
@@ -193,7 +193,7 @@ class AddressBook(UserDict):
         self.record_exists(record)
         self.update({record.name.value: record})
 
-    def rec_add(self, name, phone=None, birthday=None):
+    def rec_add(self, name, phone='', birthday=''):
         """Adding a contact by name
         
         If the returned object is no longer needed, it can be deleted.
@@ -386,14 +386,14 @@ if __name__ == '__main__':
 #     print(ab)
 #     print('All Ok')
 
-# book = AddressBook()
-# book.rec_add('Yurii', ('+38(067)576-1490', '+38(050)031-7201'))
+book = AddressBook()
+book.rec_add('Yurii', ('+38(067)576-1490', '+38(050)031-7201'))
 # # print(book.list_records())
 
-# book.rec_add('My', '+1(250)241-7847')
+book.rec_add('My', '+1(250)241-7847')
 # # print(book.list_records())
 
-# book.rec_add('Maryna', '+38(095)001-6123')
+book.rec_add('Maryna', '+38(095)001-6123')
 # # print(book.list_records())
 # # print(book.list_records('My'))
 # # print(book)
@@ -407,5 +407,5 @@ if __name__ == '__main__':
 # # book['Yurii'].phone_update('+1(250)241-7845', '+1(250)241-7847')
 # # print(book.list_records())
 # # print(book['Yurii'])
-# for txt in book.view_records(2):
-#     print(txt)
+for txt in book.view_records(2):
+    print(txt)
