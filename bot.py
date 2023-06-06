@@ -401,7 +401,7 @@ def parcer(command):
     #     main_bot.main_com(command)  # обработка введенной команды
     res = ''
     if len(command) > 0:
-        res = 'Неизвестная команда'
+        res = ''
         # print(type(command))
         if type(command) == list:
             cm = command
@@ -412,7 +412,6 @@ def parcer(command):
         # lfn = self.funcs.get(cm0)
         lfn = funcs.get(cm0)
         if lfn is None:
-            res = res + ' "' + cm[0] + '"!'  # Unexpected command - добавить подсказку подходящих команд
             res += '\n' + str(parser_check.closest_command(cm0, funcs.keys()))
 
         else:
@@ -440,12 +439,12 @@ def parcer(command):
             cm1 = cm0 + cm1  # добавляем ключ к команде
 
             ecm = lfn[0]
-            if lcm < ecm:
+            # if lcm < ecm:
                 # res = f'Введено параметров {lcm}, максимум {ecm}. Дополнительно запрашиваем остальные параметры.'
-                print(f'Введено параметров {lcm}, максимум {ecm}. Дополнительно запрашиваем остальные параметры.')
-            elif lcm > ecm:
+                # print(f'Введено параметров {lcm}, максимум {ecm}. Дополнительно запрашиваем остальные параметры.')
+            # elif lcm > ecm:
                 # res = f'Введено параметров {lcm}, максимум {ecm}. Лишние игнорируем.'
-                print(f'Введено параметров {lcm}, максимум {ecm}. Лишние игнорируем.')
+                # print(f'Введено параметров {lcm}, максимум {ecm}. Лишние игнорируем.')
             cm.pop(0)  # убираем команду из списка
 
             # print(cm0)

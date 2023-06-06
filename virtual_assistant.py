@@ -386,26 +386,26 @@ if __name__ == '__main__':
 #     print(ab)
 #     print('All Ok')
 
-book = AddressBook()
-book.rec_add('Yurii', ('+38(067)576-1490', '+38(050)031-7201'))
-# # print(book.list_records())
+    book = AddressBook()
+    book.rec_add('Yurii', ('+38(067)576-1490', '+38(050)031-7201'))
+    # # print(book.list_records())
 
-book.rec_add('My', '+1(250)241-7847')
-# # print(book.list_records())
+    book.rec_add('My', '+1(250)241-7847')
+    # # print(book.list_records())
 
-book.rec_add('Maryna', '+38(095)001-6123')
-# # print(book.list_records())
-# # print(book.list_records('My'))
-# # print(book)
+    book.rec_add('Maryna', '+38(095)001-6123')
+    # # print(book.list_records())
+    # # print(book.list_records('My'))
+    # # print(book)
 
-# # book.rec_delete('My')
-# # print(book.list_records())
+    # # book.rec_delete('My')
+    # # print(book.list_records())
 
-# # book.rec_update('Yurii', ('+38(067)576-1490', '+38(050)031-7201', '+1(250)241-7845'))
-# # print(book.list_records())
+    # # book.rec_update('Yurii', ('+38(067)576-1490', '+38(050)031-7201', '+1(250)241-7845'))
+    # # print(book.list_records())
 
-# # book['Yurii'].phone_update('+1(250)241-7845', '+1(250)241-7847')
-# # print(book.list_records())
-# # print(book['Yurii'])
-for txt in book.view_records(2):
-    print(txt)
+    # # book['Yurii'].phone_update('+1(250)241-7845', '+1(250)241-7847')
+    # # print(book.list_records())
+    # # print(book['Yurii'])
+    for txt in book.view_records(2):
+        print(txt)
