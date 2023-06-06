@@ -61,13 +61,15 @@ def split(arg, sep=' '):
 def get_date(sdate):
     fmd = ('%Y%m%d', '%Y-%m-%d', '%Y/%m/%d', '%Y.%m.%d', '%d%m%Y', '%d-%m-%Y', '%d/%m/%Y', '%d.%m.%Y')
     dt = None
+    if sdate == '':
+        return ''
     for fm in fmd:
         try:
             dt = datetime.strptime(sdate, fm)
             break
         except ValueError:
             pass
-    if dt == None:
+    if dt is None:
         raise ValueError(f'The string "{sdate}" is not a date!')
     return dt.date()
 
