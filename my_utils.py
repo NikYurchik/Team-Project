@@ -1,4 +1,5 @@
-from datetime import datetime, date
+from datetime import datetime
+import re
 
 CYRILLIC_SYMBOLS = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯЄІЇҐабвгдеёжзийклмнопрстуфхцчшщъыьэюяєіїґ"
 TRANSLATION = ("A", "B", "V", "G", "D", "E", "E", "Zh", "Z", "I", "J", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U",
@@ -164,8 +165,11 @@ def sanitize_phone_number(phone):
 
 
 def format_email(email):
-    return email # ТУТ ПОВИННО БУТИ ТЕЖ ЩО І В format_phone_number(), ТІЛЬКИ ДЛЯ Email
+    if re.match(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b', email):
+        return email
+    else:
+        return None  # Буде помилка якщо емейл не відповідає вимогам
 
 
 def sanitize_email(email):
-    return email # ТУТ ПОВИННО БУТИ ТЕЖ ЩО І В sanitize_phone_number(), ТІЛЬКИ ДЛЯ Email
+    return email.lower()
