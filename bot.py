@@ -1,4 +1,4 @@
-import sys
+import os
 import pathlib
 import pickle
 from virtual_assistant import AddressBook, Record
@@ -432,7 +432,7 @@ def parcer(command):
                     cm1 = '_' + cm1
             else:
                 cmk = keys.get(cm1)
-                if cmk == None:
+                if cmk is None:
                     res = f'Недопустимый ключ --{cm1} у команды {cm0}'
                     return res
                 cm.pop(1)  # убираем ключ команды
@@ -461,6 +461,10 @@ def parcer(command):
     return res
 
 
+def clear_screen():
+    os.system('clear')
+
+
 def main():
     # sys_argv = sys.argv
     # sys_argv = ['bot.py']
@@ -476,8 +480,9 @@ def main():
         print(parcer(command))
         if interactive_mode == 0:
             break
-        cmd = input('>> ')
+        cmd = input('Очікую команду: ')
         command = split(cmd)
+        clear_screen()
 
 
 if __name__ == "__main__":
