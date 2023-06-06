@@ -225,7 +225,7 @@ def get_param(name, required):
 def fun_hello(command, list_params):
     global interactive_mode
     interactive_mode = 1
-    print('How can I help you?')
+    print('Hello! \nHow can I help you?')
 
 
 def fun_exit(command, list_params):
@@ -248,8 +248,7 @@ def get_param_and_exec(command, list_params):
         error_text = command[0:k]
     pars = params.get(command)  # словарь параметров команды
     if pars is None:
-        print(f'Не найден список параметров команды "{error_text}". Обратитесь к разработчику.')
-        return False
+        return f'Не найден список параметров команды "{error_text}". Обратитесь к разработчику.'
     else:
         k = 0
         for key, val in pars.items():
@@ -264,7 +263,7 @@ def get_param_and_exec(command, list_params):
                     if k >= len(list_params):  # параметр не задан в команде
                         st = get_param(val[1], val[0])  # запрашиваем параметр
                         if st == '/q':
-                            return True
+                            return '\nOK'
                     else:
                         st = list_params[k]
                     if k == 0:
@@ -275,7 +274,7 @@ def get_param_and_exec(command, list_params):
                     done = False
                 except Exception as e:
                     print(str(e))
-        return True
+        return '\nOK!'
 
 
 # ----------------------------------------
@@ -294,7 +293,7 @@ funcs = {
     #
     "search": [1, '', get_param_and_exec],
     "show": [0, 'all', get_param_and_exec],
-    "sort": [2, '', get_param_and_exec]
+    "sort": [1, '', get_param_and_exec]
 }
 
 keys = {
@@ -455,7 +454,7 @@ def parcer(command):
             except Exception as e:
                 res = str(e)
     else:
-        print('Переход в интеактивный режим ввода команд.')
+        # print('Переход в интеактивный режим ввода команд.')
         fun_hello('hello', [])
     return res
 
