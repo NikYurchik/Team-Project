@@ -382,11 +382,12 @@ if __name__ == '__main__':
     assert ab['Dany'].phones[1].value == '+38(099)012-3456'
     assert isinstance(ab['Dany'].birthday, Birthday)
     assert ab['Dany'].birthday.value == '2001-11-21'
-#     print(ab['Dany'])
-#     print(ab)
-#     print('All Ok')
+    # print(ab['Dany'])
+    # print(ab)
+    # print('All Ok')
 
-    book = AddressBook()
+    # book = AddressBook()
+    book = ab
     book.rec_add('Yurii', ('+38(067)576-1490', '+38(050)031-7201'))
     # # print(book.list_records())
 
@@ -407,5 +408,15 @@ if __name__ == '__main__':
     # # book['Yurii'].phone_update('+1(250)241-7845', '+1(250)241-7847')
     # # print(book.list_records())
     # # print(book['Yurii'])
+    ls = ''
     for txt in book.view_records(2):
-        print(txt)
+        if len(ls) == 0:
+            ls = txt
+        else:
+            print(ls)
+            if input('') == '/q':
+                ls = ''
+                break
+            ls = txt
+    if len(ls) > 0:
+        print(ls)

@@ -1,6 +1,6 @@
 # First Team-Project
 
-<!--
+<!-- en
 This is a bot-assistant.
 Bot implemented as a console application.
 
@@ -15,7 +15,7 @@ Executes commands:
 
 'add [--<key>] [<Name> [<Phone> | <BirthDay> | <Email> | <Address> | <FullName>]]' - saves
     a new contact / phone / birthday / email / address / fullname in the phonebook.
-    <key>: {contact | name} | phone | birthday | email | address | fullname
+    <key>: {contact | name} | phone | birthday | email | address | fullname}
 
 'change [--<key>] <Name> [<Phone> | <BirthDay> | <Email> | <Address> | <FullName>]' - saves
     the new phone number / birthday / email / address / fullname of an existing contact in the phonebook.
@@ -54,7 +54,7 @@ If the request for missing contact details is set in the settings,
 then in the process of performing add and change operations, the bot will interactively request the missing details.
 -->
 
-<!--
+<!-- ru
 Это бот-помощник.
 Бот реализован в виде консольного приложения.
 
@@ -96,7 +96,7 @@ then in the process of performing add and change operations, the bot will intera
 
 ------------------------------------   Settings   ---------------------------------
 
-'setting --<key> <value>' - установить значение ключа настроек.
+'set --<key> <value>' - установить значение ключа настроек.
     <key>: ключи настроек.
         request_details - запрашивать ли в командном режиме недостающие реквизиты контакта;
         display_birthdays - выводить ли при запуске бота список контактов, у которых день рождения попадает в заданный период от текущего дня;
