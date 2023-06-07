@@ -149,7 +149,7 @@ class Record:
     def days_to_birthday(self):     # повертає кількість днів до наступного дня народження
         if self.birthday.value:
             cdt = datetime.now().date()
-            dt = self.birthday.value
+            dt = datetime.strptime(self.birthday.value, '%Y-%m-%d')
             dt = date(cdt.year, dt.month, dt.day)
             if dt < cdt:
                 dt = date(cdt.year + 1, dt.month, dt.day)
