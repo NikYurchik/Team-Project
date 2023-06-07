@@ -58,10 +58,10 @@ class Birthday(Field):
 
     @value.setter
     def value(self, birthday):
-        self.__value = None if birthday == None else get_date(birthday)
+        self.__value = None if not birthday else get_date(birthday)
 
     def __repr__(self):
-        return self.__value.strftime('%A %Y %B %d')
+        return '' if self.__value == None else self.__value.strftime('%A %Y %B %d')
 
 class Address(Field):
     def __init__(self, address):
