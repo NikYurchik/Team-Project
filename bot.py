@@ -74,9 +74,9 @@ class Bot_assistant:
                 pickle.dump(saved_class, fh)
 
     def save_classes(self):
-        self.save_to_file('AddressBook.bin')
-        self.save_to_file('NoteBook.bin')
-        self.save_to_file('Setting.bin')
+        self.save_to_file('AddressBook.bin', self.addressbook)
+        self.save_to_file('NoteBook.bin', self.notebook)
+        self.save_to_file('Setting.bin', self.botsetting)
 
     # ----------------------------------------
     def fun_add_name(self, contact, value):
@@ -130,7 +130,7 @@ class Bot_assistant:
     def fun_add_email(self, contact, value):
         # print(f'Добавляем eMail {value} контакту {contact}')
         self.check_addressbook()
-        # addressbook.email_add(contact, value)
+        # self.addressbook.email_add(contact, value)
 
     def fun_get_email(self, contact, value):
         # print(f'Проверяем наличие eMail {value} у контакта {contact}')
@@ -454,7 +454,7 @@ class Bot_assistant:
                     if cmk is None:
                         res = f'Недопустимый ключ --{cm1} у команды {cm0}'
                         return res
-                    cm.pop(1)  # убираем ключ команды
+                    # cm.pop(1)  # убираем ключ команды
                     cm1 = '_' + cm1
                 cm1 = cm0 + cm1  # добавляем ключ к команде
 
@@ -493,6 +493,7 @@ class Bot_assistant:
             cmd = input('>> ')
             command = split(cmd)
             #clear_screen()
+        self.save_classes()
 
 
 if __name__ == "__main__":
