@@ -31,7 +31,7 @@ class Bot_assistant:
         self.cur_email = None
 
     def load_setting(self):
-        bs = self.read_from_file('Setting.bin')
+        bs = self.read_from_file('save/Setting.bin')
         if bs is None or not isinstance(bs, Bot_setting):
             bs = Bot_setting()
         self.botsetting = bs
@@ -49,14 +49,14 @@ class Bot_assistant:
 
     def check_addressbook(self):
         if self.addressbook is None:
-            ab = self.read_from_file('AddressBook.bin')
+            ab = self.read_from_file('save/AddressBook.bin')
             if ab is None or not isinstance(ab, AddressBook):
                 ab = AddressBook()
             self.addressbook = ab
 
     def check_notebook(self):
         if self.notebook is None:
-            nb = self.read_from_file('NoteBook.bin')
+            nb = self.read_from_file('save/NoteBook.bin')
             # if nb is None or not isinstance(nb, Notebook):
             #     nb = Notebook()
             if nb is None or not isinstance(nb, Note):
@@ -74,9 +74,9 @@ class Bot_assistant:
                 pickle.dump(saved_class, fh)
 
     def save_classes(self):
-        self.save_to_file('AddressBook.bin', self.addressbook)
-        self.save_to_file('NoteBook.bin', self.notebook)
-        self.save_to_file('Setting.bin', self.botsetting)
+        self.save_to_file('save/AddressBook.bin',self.addressbook)
+        self.save_to_file('save/NoteBook.bin', self.notebook)
+        self.save_to_file('save/Setting.bin', self.botsetting)
 
     # ----------------------------------------
     def fun_add_name(self, contact, value):
@@ -213,6 +213,20 @@ class Bot_assistant:
         else:
             print(f'Вывод заметок с тегом {tag}')
 
+    def fun_show_birthday(self, days=Bot_setting.number_of_days, tmp=''):
+        self.check_addressbook()
+        head = f"Список контактів у яких день народження через {days} днів: \n"
+        res = ''
+        for record in self.addressbook.data.values():
+            if record.birthday.value:
+                dtb = int(record.days_to_birthday())
+                if dtb <= int(days):
+                    res += f"{record.view_record()} | до ДР {dtb} днів.\n"
+        if res:
+            return head + res
+        return "Відсутні контакти у яких день народження через {days} днів"
+
+
     def fn_setting_save(self, contact, value):
         pass
 
@@ -234,6 +248,7 @@ class Bot_assistant:
         return 'Hello! \nHow can I help you?'
 
     def fun_exit(self, command, list_params):
+        self.save_classes()
         self.interactive_mode = 0
         # print('Good bye!')
         return 'Good bye!'
@@ -333,7 +348,7 @@ class Bot_assistant:
         "change": ['contact', 'phone', 'birthday', 'address', 'email', 'fullname', 'note'],
         "delete": ['contact', 'phone', 'email', 'note'],
         "search": ['note'],
-        "show": ['all', 'contact', 'note', 'setting'],
+        "show": ['all', 'contact', 'note', 'birthday', 'setting'],
         # "help": ['add', 'change', 'delete', 'search', 'show', 'help', 'help', 'setting', 'sort'],
         "help": [],
         "set": ['request_details', 'display_birthdays', 'number_of_days', 'display_lines'],
@@ -409,6 +424,7 @@ class Bot_assistant:
         "show_all": {'all': [-1, '', fun_show_name]},
         "show_name": {'name': [1, 'Contact Name', fun_show_name]},
         "show_note": {'tag': [1, 'Note Tag', fun_show_note]},
+        "show_birthday": {'days': [1, 'Кількість днів', fun_show_birthday]},
         "sort": {'source': [1, 'Шлях до папки сортування: ', func_sorter]},
         #
         # "set": ['request_details', 'display_birthdays', 'number_of_days', 'display_lines'],
@@ -450,11 +466,10 @@ class Bot_assistant:
                     if len(cm1) > 0:  # есть ключ по умолчанию
                         cm1 = '_' + cm1
                 else:
-                    cmk = self.keys.get(cm1)
+                    cmk = self.keys.get(cm0)
                     if cmk is None:
                         res = f'Недопустимый ключ --{cm1} у команды {cm0}'
                         return res
-                    # cm.pop(1)  # убираем ключ команды
                     cm1 = '_' + cm1
                 cm1 = cm0 + cm1  # добавляем ключ к команде
 
