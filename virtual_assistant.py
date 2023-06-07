@@ -1,6 +1,7 @@
 from collections import UserList, UserDict
 from datetime import datetime, date
 from my_utils import format_phone_number, sanitize_phone_number, get_date
+import re
 
 """
 
@@ -37,7 +38,12 @@ class Phone(Field):
 
     @value.setter
     def value(self, phone):
-        self.__value = sanitize_phone_number(phone)
+        # self.__value = sanitize_phone_number(phone)
+        ph = sanitize_phone_number(phone)
+        if re.match(r"(\b\d{10}\b)|(\+?\d{12}\b)", ph):
+            self.__value = ph
+        else:
+            raise ValueError('Incorrect phone number!')
 
     def __repr__(self):
         return self.value
@@ -57,6 +63,59 @@ class Birthday(Field):
     def __repr__(self):
         return '' if self.__value == None else self.__value.strftime('%A %Y %B %d')
 
+class Address(Field):
+    def __init__(self, address):
+        self.value = address
+
+    @property
+    def value(self):
+        return '' if self.__value == None else self.__value
+
+    @value.setter
+    def value(self, address):
+        self.__value = None if address == None else self.value
+
+    def __repr__(self):
+        return self.__value
+
+class Mail(Field):
+    def __init__(self, mail):
+        self.value = mail
+
+    @property
+    def value(self):
+        return '' if self.__value == None else self.__value
+
+    @value.setter
+    def value(self, mail):
+        if not mail: self.__value = None
+        elif re.findall(r'(^[a-zA-Z]{1,}[a-zA-Z0-9_\.]{1,}@[a-zA-Z]+\.[a-zA-Z]{2,}$)', mail):
+            self.__value = mail
+        else:
+            raise ValueError('Incorrect email!')
+
+    def __repr__(self):
+        return self.__value
+
+class FullName(Field):
+    def __init__(self, full_name):
+        self.value = full_name
+
+    @property
+    def value(self):
+        return '' if self.__value == None else self.__value
+
+    @value.setter
+    def value(self, full_name):
+        if not full_name: self.__value = None
+        elif re.match(r'(^[a-zA-Z\s\-]{2,}$)', full_name):
+            self.__value = self.value
+        else:
+            raise ValueError('Incorrect full name input, check it and try again, please!')
+
+    def __repr__(self):
+        return self.__value
+
 ##########################################################################################
 
 # відповідає за логіку додавання/видалення/редагування необов'язкових полів та зберігання обов'язкового поля Name
@@ -69,6 +128,9 @@ class Record:
         if phone:
             self.phone_add(phone)
         self.birthday = Birthday(None)
+        self.full_name = FullName(None)
+        self.mails = []
+        self.address = Address(None)
 
     def phone_exists(self, phone, is_raise = None):
         """Search for a phone by number
@@ -129,22 +191,46 @@ class Record:
         #     del ps
         return ps
 
+    def email_add(self, mail):
+        """Saving the mail in self.mails"""
+        if isinstance(mail, str):
+            em = self.mail_save(mail)
+        if str(mail) in list(map(str, self.mails)):
+            raise Exception (f'This email has already been saved!')
+        else: self.mails.append(mail)
+
+
     def view_record(self, is_birthday=True):
         """Get a list of phones in one line from self.phones"""
         res = self.name.value
         if is_birthday and self.birthday.value:
-            res = res + ' [birthday ' + self.birthday.value + ']:'
+            res = res + ' [birthday ' + self.birthday.value + ']: '
         else:
-            res = res + ':'
+            res = res + ': '
         st = ' '
         for ph in self.phones.data:
             res = res + st + ph.value
             st = ', '
+        # res = res + ', '.join(self.phones.data)
+
+        if any(self.mails):
+            res = res + ' [emails: ' + ', '.join(map(str, self.mails)) + ']'
+        
+        fn = self.full_name.value if self.full_name.value else ''
+        
+        ad = ' [address: ' + self.address.value + ']' if self.address.value else ''
+        
+        if fn or ad:
+            res = res + '\n' + fn + ad
         return res
 
     def birthday_save(self, birthday):
         """Saving the birthday in self.birthday"""
         self.birthday.value = birthday
+
+    def address_save(self, address):
+        """Saving the address in self.address"""
+        self.address.value = address
 
     def days_to_birthday(self):     # повертає кількість днів до наступного дня народження
         if self.birthday.value:

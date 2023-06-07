@@ -125,12 +125,12 @@ class Bot_assistant:
     def fun_set_address(self, contact, value):
         # print(f'Заменяем адрес у контакта {contact} на {value}')
         self.check_addressbook()
-        # self.addressbook.address_save(contact, value)
+        self.addressbook.address_save(contact, value)
 
     def fun_add_email(self, contact, value):
         # print(f'Добавляем eMail {value} контакту {contact}')
         self.check_addressbook()
-        # addressbook.email_add(contact, value)
+        self.addressbook.email_add(contact, value)
 
     def fun_get_email(self, contact, value):
         # print(f'Проверяем наличие eMail {value} у контакта {contact}')
@@ -508,6 +508,7 @@ class Bot_assistant:
             cmd = input('>> ')
             command = split(cmd)
             #clear_screen()
+        self.save_classes()
 
 
 if __name__ == "__main__":
