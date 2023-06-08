@@ -282,7 +282,7 @@ class Record:
 
     def fullname_save(self, fullname):
         """Saving the fullname in self.fullname"""
-        self.fullname.value = fullname
+        self.full_name.value = fullname
 
     def days_to_birthday(self):     # повертає кількість днів до наступного дня народження
         if self.birthday.value:
@@ -304,7 +304,7 @@ class Record:
 class AddressBook(UserDict):
     """Contact book"""
 
-    def record_exists(self, rec_name, is_raise = None):
+    def record_exists(self, rec_name, is_raise=None):
         """Search for a contact by name
         
         is_raise = None - errors are not generated

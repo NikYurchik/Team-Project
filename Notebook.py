@@ -37,15 +37,33 @@ class Note:
         sleep(delay)
 
     # Функція для пошуку текста по тегу.
-    def search_notes(self, keyword):
+    def search_notes_by_tag(self, keyword):
         found_notes = []
-        delay = 2
+        delay = 1
 
         for note in self.notes:
             if keyword in note['tags']:
                 found_notes.append(note)
 
-        if found_notes == True and found_notes != 'Empty':
+        if found_notes and found_notes != 'Empty':
+            print("Найдены заметки:")
+            for note in found_notes:
+                print(note['text'])
+                sleep(delay)
+        else:
+            print("Заметки не найдены.")
+            sleep(delay)
+
+            # Функція для пошуку текста по тегу.
+    def search_notes_by_substring(self, keyword):
+        found_notes = []
+        delay = 1
+
+        for note in self.notes:
+            if keyword in note['text']:
+                found_notes.append(note)
+
+        if found_notes and found_notes != 'Empty':
             print("Найдены заметки:")
             for note in found_notes:
                 print(note['text'])
