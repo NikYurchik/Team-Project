@@ -25,8 +25,8 @@ class Note:
         elif len(note_text) == 0 or note_text == '':
             note_text = 'Empty'
             note = {'text': note_text}
-        elif len(note_text) > 80:
-            raise ValueError('Нельзя записать больше 80 символов.')
+        elif len(note_text) > 120:
+            raise ValueError('Нельзя записать больше 120 символов.')
 
         note = {'text': note_text, 'tags': tags}
         self.notes.append(note)
@@ -64,6 +64,12 @@ class Note:
 
             self.dates = datetime.now()
             print("Заметка отредактирована.")
+
+    # Перевірка наявності тега.
+    def tag_exists(self, keyword):
+        for note in self.notes:
+            return keyword in note['tags']
+        raise Exception(f'Тег "{keyword}" не знайдений серед нотаток!')
 
     # Функція для редагування тегу.
     def edit_tag(self, keyword, new_text):

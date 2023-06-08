@@ -40,7 +40,7 @@ class Phone(Field):
     def value(self, phone):
         # self.__value = sanitize_phone_number(phone)
         ph = sanitize_phone_number(phone)
-        if re.match(r"(\b\d{10}\b)|(\+?\d{12}\b)", ph):
+        if re.match(r"(\b\d{10}\b)|(\+?\d{11}\b)|(\+?\d{12}\b)", ph):
             self.__value = ph
         else:
             raise ValueError('Incorrect phone number!')
@@ -54,14 +54,14 @@ class Birthday(Field):
 
     @property
     def value(self):
-        return '' if self.__value == None else self.__value.strftime('%Y-%m-%d')
+        return '' if not self.__value else self.__value.strftime('%Y-%m-%d')
 
     @value.setter
     def value(self, birthday):
-        self.__value = None if birthday == None else get_date(birthday)
+        self.__value = None if not birthday else get_date(birthday)
 
     def __repr__(self):
-        return self.__value.strftime('%A %Y %B %d')
+        return '' if not self.__value else self.__value.strftime('%A %Y %B %d')
 
 class Address(Field):
     def __init__(self, address):
@@ -69,14 +69,14 @@ class Address(Field):
 
     @property
     def value(self):
-        return '' if self.__value == None else self.__value
+        return '' if not self.__value else self.__value
 
     @value.setter
     def value(self, address):
-        self.__value = None if address == None else self.value
+        self.__value = None if not address else self.value
 
     def __repr__(self):
-        return self.__value
+        return '' if not self.__value else self.__value
 
 class Mail(Field):
     def __init__(self, mail):
@@ -84,18 +84,19 @@ class Mail(Field):
 
     @property
     def value(self):
-        return '' if self.__value == None else self.__value
+        return '' if not self.__value else self.__value
 
     @value.setter
     def value(self, mail):
-        if not mail: self.__value = None
+        if not mail:
+            self.__value = None
         elif re.findall(r'(^[a-zA-Z]{1,}[a-zA-Z0-9_\.]{1,}@[a-zA-Z]+\.[a-zA-Z]{2,}$)', mail):
             self.__value = mail
         else:
             raise ValueError('Incorrect email!')
 
     def __repr__(self):
-        return self.__value
+        return '' if not self.__value else self.__value
 
 class FullName(Field):
     def __init__(self, full_name):
@@ -103,7 +104,7 @@ class FullName(Field):
 
     @property
     def value(self):
-        return '' if self.__value == None else self.__value
+        return '' if not self.__value else self.__value
 
     @value.setter
     def value(self, full_name):
@@ -114,7 +115,7 @@ class FullName(Field):
             raise ValueError('Incorrect full name input, check it and try again, please!')
 
     def __repr__(self):
-        return self.__value
+        return '' if not self.__value else self.__value
 
 ##########################################################################################
 
@@ -191,14 +192,60 @@ class Record:
         #     del ps
         return ps
 
-    def email_add(self, mail):
-        """Saving the mail in self.mails"""
-        if isinstance(mail, str):
-            em = self.mail_save(mail)
-        if str(mail) in list(map(str, self.mails)):
-            raise Exception (f'This email has already been saved!')
-        else: self.mails.append(mail)
+    def email_exists(self, email, is_raise = None):
+        """Search for a email
+        
+        is_raise = None - errors are not generated
+                 = 1 - error if record exists
+                 = -1 - error if record does not exist
+        """
+        pname = email.value if type(email) == Mail else email
+        for i in range(len(self.mails)):
+            ps = self.mails[i]
+            if ps.value == pname:
+                if is_raise == 1:
+                    raise Exception(f'Email "{email}" alredy exists!')
+                return ps
+        if is_raise == -1:
+            raise Exception(f'Email "{email}" not found!')
+        return None
 
+    def email_add(self, email):
+        """Adding one email to the self.mails list
+        
+        The 'email' parameter can be of type Mail or a string.
+        """
+        if type(email) == Mail:
+            self.email_exists(email, is_raise = 1)
+            self.mails.append(email)
+        elif len(email) > 0:
+            self.phone_exists(email, is_raise = 1)
+            self.mails.append(Mail(email))
+
+    def email_update(self, email, email_new):
+        """Changing the email in self.mails with a new email
+        
+        The 'email' and 'email_new' parameters can be of type Mail or a string.
+        If the returned object is no longer needed, it can be deleted.
+        """
+        ps = self.email_exists(email, is_raise = -1)
+        self.email_exists(email_new, is_raise = 1)
+        if type(email_new) != Mail:
+            ps.value = email_new
+        else:
+            self.mails.remove(ps)
+            self.mails.append(email_new)
+            return ps
+
+    def email_delete(self, email):
+        """Removing one email from the self.mails list
+        
+        The 'email' parameter can be of type Mail or a string.
+        If the returned object is no longer needed, it can be deleted.
+        """
+        ps = self.email_exists(email, is_raise = -1)
+        self.mails.remove(ps)
+        return ps
 
     def view_record(self, is_birthday=True):
         """Get a list of phones in one line from self.phones"""
@@ -232,10 +279,15 @@ class Record:
         """Saving the address in self.address"""
         self.address.value = address
 
+    def fullname_save(self, fullname):
+        """Saving the fullname in self.fullname"""
+        self.fullname.value = fullname
+
     def days_to_birthday(self):     # повертає кількість днів до наступного дня народження
         if self.birthday.value:
             cdt = datetime.now().date()
-            dt = self.birthday.value
+            # dt = self.birthday.value
+            dt = datetime.strptime(self.birthday.value, '%Y-%m-%d')
             dt = date(cdt.year, dt.month, dt.day)
             if dt < cdt:
                 dt = date(cdt.year + 1, dt.month, dt.day)
