@@ -152,9 +152,9 @@ class Bot_assistant:
         self.check_addressbook()
         if self.cur_email:
             if value:
-                self.addressbook.email_update(contact, self.cur_email, value)
+                self.addressbook.record_exists(contact).email_update(contact, self.cur_email, value)
             else:
-                self.addressbook.email_delete(contact, self.cur_phone)
+                self.addressbook.record_exists(contact).email_delete(contact, self.cur_phone)
         else:
             self.addressbook.record_exists(contact).email_add(value)
         self.cur_email = None
