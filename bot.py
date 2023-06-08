@@ -28,7 +28,7 @@ class Bot_assistant:
         # self.setting_key = None
 
     def load_setting(self):
-        bs = self.read_from_file('./save/save/Setting.bin')
+        bs = self.read_from_file('./save/Setting.bin')
         if bs is None or not isinstance(bs, Bot_setting):
             bs = Bot_setting()
         self.botsetting = bs
@@ -46,14 +46,14 @@ class Bot_assistant:
 
     def check_addressbook(self):
         if self.addressbook is None:
-            ab = self.read_from_file('./save/save/AddressBook.bin')
+            ab = self.read_from_file('./save/AddressBook.bin')
             if ab is None or not isinstance(ab, AddressBook):
                 ab = AddressBook()
             self.addressbook = ab
 
     def check_notebook(self):
         if self.notebook is None:
-            nb = self.read_from_file('./save/save/NoteBook.bin')
+            nb = self.read_from_file('./save/NoteBook.bin')
             # if nb is None or not isinstance(nb, Notebook):
             #     nb = Notebook()
             if nb is None or not isinstance(nb, Note):
@@ -71,9 +71,9 @@ class Bot_assistant:
                 pickle.dump(saved_class, fh)
 
     def save_classes(self):
-        self.save_to_file('./save/save/AddressBook.bin',self.addressbook)
-        self.save_to_file('./save/save/NoteBook.bin', self.notebook)
-        self.save_to_file('./save/save/Setting.bin', self.botsetting)
+        self.save_to_file('./save/AddressBook.bin',self.addressbook)
+        self.save_to_file('./save/NoteBook.bin', self.notebook)
+        self.save_to_file('./save/Setting.bin', self.botsetting)
 
     # --------------------------------------------------------------------------------
     def fun_add_name(self, contact, value):
@@ -233,18 +233,19 @@ class Bot_assistant:
         else:
             print(f'Вывод заметок с тегом {tag} не релизован.')
 
-    def fun_show_birthday(self, days=Bot_setting.number_of_days, tmp=''):
+    def fun_show_birthday(self, days=7, tmp=''):
         self.check_addressbook()
-        head = f"Список контактів у яких день народження через {days} днів: \n"
-        res = ''
-        for record in self.addressbook.data.values():
-            if record.birthday.value:
-                dtb = int(record.days_to_birthday())
-                if dtb <= int(days):
-                    res += f"{record.view_record()} | до ДР {dtb} днів.\n"
-        if res:
-            return head + res
-        return "Відсутні контакти у яких день народження через {days} днів"
+        # head = f"Список контактів у яких день народження через {days} днів: \n"
+        # res = ''
+        # for record in self.addressbook.data.values():
+        #     if record.birthday.value:
+        #         dtb = int(record.days_to_birthday())
+        #         if dtb <= int(days):
+        #             res += f"{record.view_record()} | до ДР {dtb} днів.\n"
+        # if res:
+        #     return head + res
+        # return "Відсутні контакти у яких день народження через {days} днів"
+        return self.addressbook.view_birthdays(self.botsetting.number_of_days)
 
 
     # def fn_setting_save(self, contact, value):
@@ -281,7 +282,11 @@ class Bot_assistant:
 
     def fun_hello(self, command, list_params):
         self.interactive_mode = 1
-        return 'Hello! \nHow can I help you?'
+        res = 'Hello! \nHow can I help you?'
+        if self.botsetting.display_birthdays:
+            self.check_addressbook()
+            res = self.addressbook.view_birthdays(self.botsetting.number_of_days) + '\n' + res
+        return res
 
     def fun_exit(self, command, list_params):
         self.save_classes()
@@ -290,7 +295,7 @@ class Bot_assistant:
 
     def func_sorter(self, command, list_params):
         sort = Sorter()
-        destination = input("Введіть шлях, куди сортувати (за замовчуванням '' - сортування в ту ж папку): ")
+        destination = input("Введіть шлях, куди сортувати (за замовчуванням '' - сортування в ту ж папку):")
         sort.run(list_params, destination)
         return 'Ok'
 
@@ -466,7 +471,7 @@ class Bot_assistant:
         "show_name": {'name': [1, 'Contact Name', fun_show_name]},
         "show_birthday": {'days': [1, 'Кількість днів', fun_show_birthday]},
         "show_note": {'tag': [1, 'Note Tag', fun_show_note]},
-        "show_birthday": {'days': [1, 'Кількість днів', fun_show_birthday]},
+        "show_birthday": {'days': [-1, 'Кількість днів', fun_show_birthday]},
         "show_setting": {'name': [-1, 'Setting Name', fun_show_setting]},
         "sort": {'source': [1, 'Шлях до папки сортування: ', func_sorter]},
         #
@@ -537,8 +542,6 @@ class Bot_assistant:
         # sys_argv = ['bot.py']
         # sys_argv = ['bot.py','show']
         # sys_argv = ['bot.py','add', 'Юрий']
-        # sys_argv = ['bot.py','add', 'Юрий']
-        # print(sys_argv, len(sys_argv))
         command = []
         if len(sys_argv) > 1:
             for i in range(len(sys_argv)-1):

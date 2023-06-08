@@ -8,6 +8,21 @@ class Bot_setting:
     setting_lang = {}
     errors = ''
 
+    def get_request_details(self):
+        return str(self.request_details)
+
+    def get_display_birthdays(self):
+        return str(self.display_birthdays)
+
+    def get_number_of_days(self):
+        return str(self.number_of_days)
+
+    def get_display_lines(self):
+        return str(self.display_lines)
+
+    def get_language(self):
+        return self.language
+
     setting_dict = {
         'en': {
             'header': [
@@ -17,23 +32,23 @@ class Bot_setting:
             ],
             'request_details': [
                 "Whether to request missing contact details in command mode.",
-                request_details
+                get_request_details
             ],
             'display_birthdays': [
                 "Should the bot launch a list of contacts whose birthday falls within a specified period from the current day.",
-                display_birthdays
+                get_display_birthdays
             ],
             'number_of_days': [
                 "Number of days from the current day to display a list of contacts whose birthday falls within this period.",
-                number_of_days
+                get_number_of_days
             ],
             'display_lines': [
                 "The number of rows to display in one portion of the output list of contacts or notes.",
-                display_lines
+                get_display_lines
             ],
             'language': [
                 "Interface language (en - English, ru - Russian, uk - Ukrainian).",
-                language
+                get_language
             ]
         },
         'ru': {
@@ -44,23 +59,23 @@ class Bot_setting:
             ],
             'request_details': [
                 "Запрашивать ли в командном режиме недостающие реквизиты контакта.",
-                request_details
+                get_request_details
             ],
             'display_birthdays': [
                 "Выводить ли при запуске бота список контактов, у которых день рождения попадает в заданный период от текущего дня.",
-                display_birthdays
+                get_display_birthdays
             ],
             'number_of_days': [
                 "Количество дней от текущего дня для вывода списка контактов, у которых день рождения приходится на этот период.",
-                number_of_days
+                get_number_of_days
             ],
             'display_lines': [
                 "Количество отображаемых строк в одной порции вывода списка контактов или заметок.",
-                display_lines
+                get_display_lines
             ],
             'language': [
                 "Язык интерфейса (en - English, ru - русский, uk - український).",
-                language
+                get_language
             ]
         },
         'uk': {
@@ -70,23 +85,23 @@ class Bot_setting:
             ],
             'request_details': [
                 "Чи вимагати в командному режимі реквізити контакту, якого не вистачає.",
-                request_details
+                get_request_details
             ],
             'display_birthdays': [
                 "Чи виводити при запуску бота список контактів, у яких день народження потрапляє у заданий період від поточного дня.",
-                display_birthdays
+                get_display_birthdays
             ],
             'number_of_days': [
                 "Кількість днів від поточного дня для виведення списку контактів, у яких день народження припадає на цей період.",
-                number_of_days
+                get_number_of_days
             ],
             'display_lines': [
                 "Кількість рядків, що відображаються в одній порції виведення списку контактів або нотаток.",
-                display_lines
+                get_display_lines
             ],
             'language': [
                 "Мова інтерфейсу (en - English, ru - російська, uk - українська).",
-                language
+                get_language
             ]
         }
     }
@@ -133,7 +148,7 @@ class Bot_setting:
     def view_setting(self, key=''):
         if key:
             lst = self.setting_lang.get(key)
-            val = str(lst[1])
+            val = lst[1](self)
             res = key + ' = ' + val + '  - ' + lst[0]
         else:
             res = ''
@@ -142,7 +157,7 @@ class Bot_setting:
                 if key == 'header':
                     res = lst[0] +'\n' + sep + '\n'
                 else:
-                    val = str(lst[1])
+                    val = lst[1](self)
                     res = res + key + ' = ' + val + '  - ' + lst[0] +'\n'
             res = res + sep
         return res

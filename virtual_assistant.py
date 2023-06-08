@@ -247,7 +247,7 @@ class Record:
         self.mails.remove(ps)
         return ps
 
-    def view_record(self, is_birthday=True):
+    def view_record(self, is_birthday=True, is_two_lines=True):
         """Get a list of phones in one line from self.phones"""
         res = self.name.value
         if is_birthday and self.birthday.value:
@@ -267,8 +267,9 @@ class Record:
         
         ad = ' [address: ' + self.address.value + ']' if self.address.value else ''
         
+        sp = '\n' if is_two_lines else ''
         if fn or ad:
-            res = res + '\n' + fn + ad
+            res = res + sp + fn + ad
         return res
 
     def birthday_save(self, birthday):
@@ -482,6 +483,19 @@ class AddressBook(UserDict):
                 yield sep
         finally:
             return 
+
+    def view_birthdays(self, days=7):
+        sep =  '---------------------------------------------------------------'
+        head = f"Список контактів, у яких день народження у найближчі {days} днів:\n"
+        res = ''
+        for record in self.data.values():
+            if record.birthday.value:
+                dtb = int(record.days_to_birthday())
+                if dtb <= int(days):
+                    res += f"{record.view_record()} | до ДР {dtb} днів.\n"
+        if res:
+            return head + sep + '\n' + res + sep
+        return f"Відсутні контакти у яких день народження через {days} днів."
 
     def __repr__(self):
         for res in self.view_records(0):
