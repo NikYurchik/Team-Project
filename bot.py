@@ -129,12 +129,12 @@ class Bot_assistant:
     def fun_set_address(self, contact, value):
         # print(f'Заменяем адрес у контакта {contact} на {value}')
         self.check_addressbook()
-        self.addressbook.address_save(contact, value)
+        self.addressbook.record_exists(contact).address_save(value)
 
     def fun_add_email(self, contact, value):
         # print(f'Добавляем eMail {value} контакту {contact}')
         self.check_addressbook()
-        self.addressbook.email_add(contact, value)
+        self.addressbook.record_exists(contact).email_add(value)
 
     def fun_get_email(self, contact, value):
         # print(f'Проверяем наличие eMail {value} у контакта {contact}')
@@ -151,18 +151,18 @@ class Bot_assistant:
             else:
                 self.addressbook.email_delete(contact, self.cur_phone)
         else:
-            self.addressbook.email_add(contact, value)
+            self.addressbook.record_exists(contact).email_add(value)
         self.cur_email = None
 
     def fun_del_email(self, contact, value):
         # print(f'Заменяем eMail у контакта {contact} на {value}')
         self.check_addressbook()
-        self.addressbook.email_delete(contact, value)
+        self.addressbook.record_exists(contact).email_delete(value)
 
     def fun_set_fullname(self, contact, value):
         # print(f'Заменяем ФИО у контакта {contact} на {value}')
         self.check_addressbook()
-        self.addressbook.fullname_save(contact, value)
+        self.addressbook.record_exists(contact).fullname_save(value)
 
     def fun_add_note(self, tags, note):
         # print(f'Добавляем заметку "{note}" с тегами {tags}')
@@ -198,13 +198,15 @@ class Bot_assistant:
     def fun_find_substring(self, substring, tmp):
         # Вывод всех контактов, содержащих подстроку {substring}
         self.check_addressbook()
+        self.check_notebook()
         res = self.addressbook.search_records(substring)
+        res_n = self.notebook.search_notes_by_substring(substring)
         print(res)
 
     def fun_find_note(self, substring, tmp):
         # print(f'Вывод всех заметок, содержащих подстроку {substring}')
         self.check_notebook()
-        self.notebook.search_notes(substring)
+        self.notebook.search_notes_by_substring(substring)
 
     def fun_show_name(self, name='', tmp=''):
         self.check_addressbook()
@@ -227,11 +229,12 @@ class Bot_assistant:
             print('\n'.join(res))
 
     def fun_show_note(self, tag='', tmp=''):
-        if len(tag) == 0:
-            # print('Вывод всех заметок')
+        self.check_notebook()
+        if self.notebook and len(tag) == 0:
+            print('Вывод всех заметок')
             self.notebook.show()
         else:
-            print(f'Вывод заметок с тегом {tag} не релизован.')
+            self.notebook.search_notes_by_tag(tag)
 
     def fun_show_birthday(self, days=7, tmp=''):
         self.check_addressbook()
@@ -470,7 +473,7 @@ class Bot_assistant:
         "show_all": {'all': [-1, '', fun_show_name]},
         "show_name": {'name': [1, 'Contact Name', fun_show_name]},
         "show_birthday": {'days': [1, 'Кількість днів', fun_show_birthday]},
-        "show_note": {'tag': [1, 'Note Tag', fun_show_note]},
+        "show_note": {'tag': [0, 'Note Tag', fun_show_note]},
         "show_birthday": {'days': [-1, 'Кількість днів', fun_show_birthday]},
         "show_setting": {'name': [-1, 'Setting Name', fun_show_setting]},
         "sort": {'source': [1, 'Шлях до папки сортування: ', func_sorter]},
