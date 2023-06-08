@@ -1,6 +1,6 @@
 from collections import UserList, UserDict
 from datetime import datetime, date
-from my_utils import format_phone_number, sanitize_phone_number, get_date
+from bot_assistant.my_utils import format_phone_number, sanitize_phone_number, get_date
 import re
 
 """
@@ -90,7 +90,7 @@ class Mail(Field):
     def value(self, mail):
         if not mail:
             self.__value = None
-        elif re.findall(r'(^[a-zA-Z]{1,}[a-zA-Z0-9_\.]{1,}@[a-zA-Z]+\.[a-zA-Z]{2,}$)', mail):
+        elif re.findall(r'(^[a-zA-Z]{1,}[a-zA-Z0-9_.]{1,}@[a-zA-Z]+\.[a-zA-Z]{2,}$)', mail):
             self.__value = mail
         else:
             raise ValueError('Incorrect email!')
@@ -219,7 +219,7 @@ class Record:
             self.email_exists(email, is_raise = 1)
             self.mails.append(email)
         elif len(email) > 0:
-            self.phone_exists(email, is_raise = 1)
+            self.email_exists(email, is_raise = 1)
             self.mails.append(Mail(email))
 
     def email_update(self, email, email_new):
