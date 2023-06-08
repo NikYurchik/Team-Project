@@ -2,15 +2,18 @@ import os
 import sys
 import pathlib
 import pickle
-import parser_check
+from bot_assistant import parser_check
 
-from virtual_assistant import AddressBook, Record
+from bot_assistant.virtual_assistant import AddressBook
 # from Notebook import Notebook
-from Notebook import Note
-from my_utils import split
-from sorter import Sorter
-from bot_help import Bot_help
-from bot_setting import Bot_setting
+from bot_assistant.Notebook import Note
+from bot_assistant.sorter import Sorter
+from bot_assistant.bot_help import Bot_help
+from bot_assistant.bot_setting import Bot_setting
+from bot_assistant.my_utils import split
+
+module_directory = os.path.dirname(os.path.abspath(sys.modules[__name__].__file__))
+
 
 class Bot_assistant:
 
@@ -25,10 +28,11 @@ class Bot_assistant:
         self.cur_name = None
         self.cur_phone = None
         self.cur_email = None
+
         # self.setting_key = None
 
     def load_setting(self):
-        bs = self.read_from_file('./save/Setting.bin')
+        bs = self.read_from_file(f'{module_directory}./save/Setting.bin')
         if bs is None or not isinstance(bs, Bot_setting):
             bs = Bot_setting()
         self.botsetting = bs
@@ -46,14 +50,14 @@ class Bot_assistant:
 
     def check_addressbook(self):
         if self.addressbook is None:
-            ab = self.read_from_file('./save/AddressBook.bin')
+            ab = self.read_from_file(f'{module_directory}./save/AddressBook.bin')
             if ab is None or not isinstance(ab, AddressBook):
                 ab = AddressBook()
             self.addressbook = ab
 
     def check_notebook(self):
         if self.notebook is None:
-            nb = self.read_from_file('./save/NoteBook.bin')
+            nb = self.read_from_file(f'{module_directory}./save/NoteBook.bin')
             # if nb is None or not isinstance(nb, Notebook):
             #     nb = Notebook()
             if nb is None or not isinstance(nb, Note):
@@ -64,6 +68,7 @@ class Bot_assistant:
         if self.bothelp is None:
             self.bothelp = Bot_help()
 
+
     def save_to_file(self, filename, saved_class):
         if saved_class is not None:
             path_bin = pathlib.Path(filename)
@@ -71,9 +76,9 @@ class Bot_assistant:
                 pickle.dump(saved_class, fh)
 
     def save_classes(self):
-        self.save_to_file('./save/AddressBook.bin',self.addressbook)
-        self.save_to_file('./save/NoteBook.bin', self.notebook)
-        self.save_to_file('./save/Setting.bin', self.botsetting)
+        self.save_to_file(f'{module_directory}/AddressBook.bin',self.addressbook)
+        self.save_to_file(f'{module_directory}/NoteBook.bin', self.notebook)
+        self.save_to_file(f'{module_directory}/Setting.bin', self.botsetting)
 
     # --------------------------------------------------------------------------------
     def fun_add_name(self, contact, value):

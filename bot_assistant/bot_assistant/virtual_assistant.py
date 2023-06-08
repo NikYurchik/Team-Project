@@ -1,6 +1,6 @@
 from collections import UserList, UserDict
 from datetime import datetime, date
-from my_utils import format_phone_number, sanitize_phone_number, get_date
+from bot_assistant.my_utils import format_phone_number, sanitize_phone_number, get_date
 import re
 
 """
