@@ -28,7 +28,7 @@ class Bot_assistant:
         # self.setting_key = None
 
     def load_setting(self):
-        bs = self.read_from_file('./save/Setting.bin')
+        bs = self.read_from_file('./save/save/Setting.bin')
         if bs is None or not isinstance(bs, Bot_setting):
             bs = Bot_setting()
         self.botsetting = bs
@@ -46,14 +46,14 @@ class Bot_assistant:
 
     def check_addressbook(self):
         if self.addressbook is None:
-            ab = self.read_from_file('./save/AddressBook.bin')
+            ab = self.read_from_file('./save/save/AddressBook.bin')
             if ab is None or not isinstance(ab, AddressBook):
                 ab = AddressBook()
             self.addressbook = ab
 
     def check_notebook(self):
         if self.notebook is None:
-            nb = self.read_from_file('./save/NoteBook.bin')
+            nb = self.read_from_file('./save/save/NoteBook.bin')
             # if nb is None or not isinstance(nb, Notebook):
             #     nb = Notebook()
             if nb is None or not isinstance(nb, Note):
@@ -71,9 +71,9 @@ class Bot_assistant:
                 pickle.dump(saved_class, fh)
 
     def save_classes(self):
-        self.save_to_file('./save/AddressBook.bin', self.addressbook)
-        self.save_to_file('./save/NoteBook.bin', self.notebook)
-        self.save_to_file('./save/Setting.bin', self.botsetting)
+        self.save_to_file('./save/save/AddressBook.bin',self.addressbook)
+        self.save_to_file('./save/save/NoteBook.bin', self.notebook)
+        self.save_to_file('./save/save/Setting.bin', self.botsetting)
 
     # --------------------------------------------------------------------------------
     def fun_add_name(self, contact, value):
@@ -284,6 +284,7 @@ class Bot_assistant:
         return 'Hello! \nHow can I help you?'
 
     def fun_exit(self, command, list_params):
+        self.save_classes()
         self.interactive_mode = 0
         return 'Good bye!'
 
@@ -465,6 +466,7 @@ class Bot_assistant:
         "show_name": {'name': [1, 'Contact Name', fun_show_name]},
         "show_birthday": {'days': [1, 'Кількість днів', fun_show_birthday]},
         "show_note": {'tag': [1, 'Note Tag', fun_show_note]},
+        "show_birthday": {'days': [1, 'Кількість днів', fun_show_birthday]},
         "show_setting": {'name': [-1, 'Setting Name', fun_show_setting]},
         "sort": {'source': [1, 'Шлях до папки сортування: ', func_sorter]},
         #
