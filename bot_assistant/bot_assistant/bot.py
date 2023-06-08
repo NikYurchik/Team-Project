@@ -32,7 +32,7 @@ class Bot_assistant:
         # self.setting_key = None
 
     def load_setting(self):
-        bs = self.read_from_file(f'{module_directory}./save/Setting.bin')
+        bs = self.read_from_file(f'{module_directory}/Setting.bin')
         if bs is None or not isinstance(bs, Bot_setting):
             bs = Bot_setting()
         self.botsetting = bs
@@ -50,14 +50,14 @@ class Bot_assistant:
 
     def check_addressbook(self):
         if self.addressbook is None:
-            ab = self.read_from_file(f'{module_directory}./save/AddressBook.bin')
+            ab = self.read_from_file(f'{module_directory}/AddressBook.bin')
             if ab is None or not isinstance(ab, AddressBook):
                 ab = AddressBook()
             self.addressbook = ab
 
     def check_notebook(self):
         if self.notebook is None:
-            nb = self.read_from_file(f'{module_directory}./save/NoteBook.bin')
+            nb = self.read_from_file(f'{module_directory}/NoteBook.bin')
             # if nb is None or not isinstance(nb, Notebook):
             #     nb = Notebook()
             if nb is None or not isinstance(nb, Note):
